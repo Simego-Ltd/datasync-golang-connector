@@ -36,16 +36,15 @@ type schemaColumnInfo struct {
 
 func main() {
 
-	port := "9000"
-
-	if p := os.Getenv("PORT"); len(p) > 0 {
-		port = p
-	}
-
 	http.HandleFunc("/list/list1/schema", handleList1Schema)
 	http.HandleFunc("/list/list1", handleList1Data)
 	http.HandleFunc("/list", handleLists)
 	http.HandleFunc("/", handleNotFound)
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "9000"
+	}
 
 	fmt.Println("Server Ready ... ", port)
 	http.ListenAndServe("localhost:"+port, nil)
