@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 )
@@ -36,10 +37,12 @@ type schemaColumnInfo struct {
 
 func main() {
 
-	http.HandleFunc("/list/list1/schema", handleList1Schema)
-	http.HandleFunc("/list/list1", handleList1Data)
-	http.HandleFunc("/list", handleLists)
-	http.HandleFunc("/", handleNotFound)
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/list/list1/schema", handleList1Schema)
+	mux.HandleFunc("/list/list1", handleList1Data)
+	mux.HandleFunc("/list", handleLists)
+	mux.HandleFunc("/", handleNotFound)
 
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -47,7 +50,7 @@ func main() {
 	}
 
 	fmt.Println("Server Ready ... ", port)
-	http.ListenAndServe("localhost:"+port, nil)
+	log.Fatal(http.ListenAndServe("localhost:"+port, mux))
 }
 
 func (d *dataResponse) AppendRow(row map[string]interface{}) {
